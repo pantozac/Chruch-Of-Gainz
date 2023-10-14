@@ -11,14 +11,18 @@ def liftRound(weight):
         weight = weight - math.fmod(weight,5)
     return weight
 
-multiplier_phase1 = (0.5, 0.7, 0.8, 0.85, 0.75, 0.65)
-reps_phase1 =(10,8,6,4,6) #Show me is 6-8, but only requires 6.  10 or more warrants a 10lb jump. Last set is always to failure,
+#The tuples below are the multipliers for the max weight and the rep schemes
+#Index 0 is for phase 1
+#Index 1 is for phase 2
 
-multiplier_phase2 = (0.5, 0.75, 0.825, 0.9, 0.85, 0.65)
-reps_phase2 = (10,6,4,2,4) #Show me is 4-6, but only requires 4.  8 or more warrants a 10lb jump. Last set is always to failure,
+multipliers = ((0.5, 0.7, 0.8, 0.85, 0.75, 0.65), (0.5, 0.75, 0.825, 0.9, 0.85, 0.65))
+reps =((10,8,6,4,6), (10,6,4,2,4))
 
-#put the tuples into a containing tuple, the phase flag will reference the index of the tuple you want to reference
-#allows code to be easily expandable if you want to add more phases later, or functionality to add more phases from the app
+
+#Phase 1: Show me set is 6-8, but only requires 6.  10 or more warrants a 10lb jump. Last set is always to failure,
+#Phase 2: Show me set is 4-6, but only requires 4.  8 or more warrants a 10lb jump. Last set is always to failure,
+
+
 
 class lift:
 
@@ -34,10 +38,10 @@ class lift:
         match phase:
             case 1:
                 for index in range(6):
-                    self.setArray[index] = liftRound(self.maxVal * multiplier_phase1[index])
+                    self.setArray[index] = liftRound(self.maxVal * multipliers[phase][index])
             case 2:
                 for index in range(6):
-                    self.setArray[index] = liftRound(self.maxVal * multiplier_phase2[index])
+                    self.setArray[index] = liftRound(self.maxVal * multipliers[phase][index])
     
     def showMe(self,missedSets):
         if missedSets < 0:
@@ -59,7 +63,7 @@ class lift:
         currSet = 0
         for index in range(4):
             currentWeight = self.setArray[currSet]
-            currentReps = reps_phase1[currSet]
+            currentReps = reps[phase][currSet]
             print("Set"+str(currSet+1)+": \n"+str(currentWeight)+" lbs for "+str(currentReps)+" reps.")
             check = int(input("How many reps did you do? "))
             if check < currentReps:
@@ -68,7 +72,7 @@ class lift:
                 print("Good Job!")
             currSet+=1
         currentWeight = self.setArray[currSet]
-        currentReps = reps_phase1[currSet]
+        currentReps = reps[phase][currSet]
         print("SHOW ME SET! (Set "+str(currSet+1)+"): \n"+str(currentWeight)+" lbs for "+str(currentReps)+" reps.")
         check = int(input("How many reps did you do? "))
         if check < currentReps:
@@ -88,7 +92,11 @@ class lift:
 
         
 
-mainLifts = [lift("Bench Press"), lift("Back Squat"), lift("Push Press"), lift("Deadlift")]
+mainLifts = (lift("Bench Press"), lift("Back Squat"), lift("Push Press"), lift("Deadlift"))
+
+phase = 0
+#NEED TO FIND A WAY TO LIMIT THIS INPUT TO THE VALID PHASE STATES (mod 2?)
+#GUI to limit options?
 
 def initialize():
     for l in mainLifts:
@@ -97,37 +105,84 @@ def initialize():
         print ("Your new max is "+str(l.maxVal)+" and your sets will be "+str(l.setArray)) # For debugging purposes only, delete after frontend is developed
 
 
-# DEBUGGING/TESTING CODE
+# Model Run Code
+
 exitCond = False
 initialize()
+
+
 while exitCond != True:
     print("Welcome to the Church of Gainz!  Your current maxes are:")
     for i in range(4):
         print(mainLifts[i].name + ": "+str(mainLifts[i].maxVal))
+    print("You are in Phase "+str(phase+1)+" of this program.")
     print("\n---------------------------------\n")
     inp = int(input("What would you like to do? \n1) Lift\n2) View Settings\n3) Exit\n"))
+    
+    # Workout Code
+    
     if (inp==1):
-        inp = int(input("What would you like to do? \n1) Bench\n2) Squat\n3) Push Press\n4) Deadlift\n5) Set Maxes\n6) Exit\n"))
-        match inp:
-            case 1|2|3|4:
-                print("You have selected "+mainLifts[inp-1].name+".")
-                mainLifts[inp-1].workout()
-            case 5:
-                set_choice = int(input("What max do you want to reset?\n1) Bench\n2) Squat\n3) Push Press\n4) Deadlift\n5) All\n"))
-                if set_choice in range(1,5):
-                    mainLifts[set_choice-1].setMax(int(input("Enter new max: ")))
-                else:
-                    initialize()
-            case _ :
-                print("Invalid input, returning to main menu")
+        menuReturn = False
+        while menuReturn == False:
+            inp = int(input("What would you like to do? \n1) Bench\n2) Squat\n3) Push Press\n4) Deadlift\n5) Exit\n"))
+            match inp:
+                case 1|2|3|4:
+                    print("You have selected "+mainLifts[inp-1].name+".")
+                    mainLifts[inp-1].workout()
+                    menuReturn = True
+                case 5:
+                    print("Returning to Main Menu")
+                    menuReturn = True
+                case _ :
+                    print("Invalid input, try again")
+    
+    
+    # Settings Code
+    
+    
     elif (inp == 2):
-        print("Settings coming soon")
+        menuReturn = False
+        while menuReturn == False:
+            inp = int(input("What would you like to do? \n1) Set Maxes\n2) Change Phase\n3) Exit\n"))
+            match inp:
+                
+                # Set Maxes Code
+
+                case 1:
+                    set_choice = int(input("What max do you want to reset?\n1) Bench\n2) Squat\n3) Push Press\n4) Deadlift\n5) All\n"))
+                    if set_choice in range(1,5):
+                        mainLifts[set_choice-1].setMax(int(input("Enter new max: ")))
+                        menuReturn = True
+                    elif set_choice == 6:
+                        initialize()
+                        menuReturn = True
+                    else:
+                        print("Invalid input")
+                
+                # Change Phase Code
+
+                case 2:
+                    phase_choice = int(input("Which phase are you in?\n1) Phase 1\n2) Phase 2\n3) Go Back\n"))
+                    if phase_choice in range (1,3):
+                        phase = phase_choice - 1
+                        menuReturn = True
+                    else:
+                        print ("Invalid Input")
+
+                case 3:
+                    print("Returning to Menu)")
+                    menuReturn = True
+                                             
+                
+    
+    # Exit Condition Met
+
+
     elif (inp == 3):
         print("Proper exit.  Good bye!")
         exitCond = True
     else:
-        print("Invalid option, exiting program")
-        exitCond = True
+        print("Invalid option")
 
 
 
