@@ -13,6 +13,11 @@ Glidepath -
     - Develop into mobile app
 
 
+Update 0.0.1-2
+    Fixed bug where sets failed to update when changeing phases
+
+    Fixed bug in showMe() to force int input
+
 Update 0.0.1-1
     Added functionality to change between phases of the program
 

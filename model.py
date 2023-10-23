@@ -35,13 +35,9 @@ class lift:
         self.maxVal = newMax
 
     def calcSets(self, phase):
-        match phase:
-            case 1:
-                for index in range(6):
-                    self.setArray[index] = liftRound(self.maxVal * multipliers[phase][index])
-            case 2:
-                for index in range(6):
-                    self.setArray[index] = liftRound(self.maxVal * multipliers[phase][index])
+        for index in range(6):
+            self.setArray[index] = liftRound(self.maxVal * multipliers[phase][index])
+
     
     def showMe(self,missedSets):
         if missedSets < 0:
@@ -55,7 +51,7 @@ class lift:
         elif missedSets == 4:
             self.maxVal-=10
         else:
-            self.setMax(input("You have failed every set, please input a lower 1RM. "))
+            self.setMax(int(input("You have failed every set, please input a lower 1RM. ")))
             # Case for total failure? Invoke new max flag for next week
     
     def workout(self):
@@ -86,7 +82,10 @@ class lift:
         print("Last set:"+str(self.setArray[5])+" lbs until failure")
         check = int(input("How many reps did you do? "))
         print("Good Job!")
+        print("DEBUG: "+ str(self.setArray))
         self.showMe(failCount)
+        self.calcSets(phase)
+        print("Next week: "+str(self.setArray))
         
 
 
@@ -101,8 +100,14 @@ phase = 0
 def initialize():
     for l in mainLifts:
         l.maxVal = int(input("Please input your max for "+l.name+": ")) # Will need to accept input from the View passed through controller
-        l.calcSets(1)
+        l.calcSets(phase)
         print ("Your new max is "+str(l.maxVal)+" and your sets will be "+str(l.setArray)) # For debugging purposes only, delete after frontend is developed
+
+def changePhase():
+    for l in mainLifts:
+        l.calcSets(phase)
+        print ("Your current max is "+str(l.maxVal)+" and your sets will be "+str(l.setArray)) # For debugging purposes only, delete after frontend is developed
+
 
 
 # Model Run Code
@@ -122,17 +127,16 @@ while exitCond != True:
     # Workout Code
     
     if (inp==1):
-        menuReturn = False
-        while menuReturn == False:
+        while True:
             inp = int(input("What would you like to do? \n1) Bench\n2) Squat\n3) Push Press\n4) Deadlift\n5) Exit\n"))
             match inp:
                 case 1|2|3|4:
                     print("You have selected "+mainLifts[inp-1].name+".")
                     mainLifts[inp-1].workout()
-                    menuReturn = True
+                    break
                 case 5:
                     print("Returning to Main Menu")
-                    menuReturn = True
+                    break
                 case _ :
                     print("Invalid input, try again")
     
@@ -141,8 +145,7 @@ while exitCond != True:
     
     
     elif (inp == 2):
-        menuReturn = False
-        while menuReturn == False:
+        while True:
             inp = int(input("What would you like to do? \n1) Set Maxes\n2) Change Phase\n3) Exit\n"))
             match inp:
                 
@@ -155,7 +158,7 @@ while exitCond != True:
                         menuReturn = True
                     elif set_choice == 6:
                         initialize()
-                        menuReturn = True
+                        break
                     else:
                         print("Invalid input")
                 
@@ -165,13 +168,14 @@ while exitCond != True:
                     phase_choice = int(input("Which phase are you in?\n1) Phase 1\n2) Phase 2\n3) Go Back\n"))
                     if phase_choice in range (1,3):
                         phase = phase_choice - 1
-                        menuReturn = True
+                        changePhase()
+                        break
                     else:
                         print ("Invalid Input")
 
                 case 3:
                     print("Returning to Menu)")
-                    menuReturn = True
+                    break
                                              
                 
     
@@ -185,22 +189,3 @@ while exitCond != True:
         print("Invalid option")
 
 
-
-
-"""
-Next Steps:
- - Ways to shift phases
- - config file/ways to save the state
- - account/user info
- - frontend
-
-
-test=lift("test")
-test.setMax(335)
-test.calcSets(1)
-print(test.maxVal, test.setArray)
-test.calcSets(2)
-print(test.setArray)
-
-initialize()
-"""
