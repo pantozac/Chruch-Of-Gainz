@@ -12,6 +12,12 @@ Glidepath -
     - Develop into web hosted application able to be accessed from web server
     - Develop into mobile app
 
+Update 0.0.1-3
+    Created functionality to import and save data from a JSON file
+        -Included exception handling for no json present in directory
+
+    Fixed bug with updating all maxes under settings
+
 
 Update 0.0.1-2
     Fixed bug where sets failed to update when changeing phases

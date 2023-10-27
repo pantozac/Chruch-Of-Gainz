@@ -1,8 +1,26 @@
 #IMPORT STATEMENTS
 
 import math
+import json
 
 #END IMPORT STATEMENTS
+
+try:
+    with open("gainz.json", "r") as openfile:
+        userData=json.load(openfile)
+
+except FileNotFoundError:
+    userData = {
+        "Name": "New User", 
+        "Maxes": {
+            "Bench Press": 0, 
+            "Back Squat": 0, 
+            "Push Press": 0, 
+            "Deadlift": 0
+            }, 
+        "Phase": 0}
+
+#TO DO:  Exception handling for JSON corruption:
 
 def liftRound(weight):
     if math.fmod(weight,5) >= 2.5:
@@ -93,11 +111,16 @@ class lift:
 
 mainLifts = (lift("Bench Press"), lift("Back Squat"), lift("Push Press"), lift("Deadlift"))
 
-phase = 0
+phase = userData["Phase"]
 #NEED TO FIND A WAY TO LIMIT THIS INPUT TO THE VALID PHASE STATES (mod 2?)
 #GUI to limit options?
 
 def initialize():
+    for l in mainLifts:
+        l.maxVal = userData["Maxes"][l.name]
+        l.calcSets(phase)
+
+def resetMaxes():
     for l in mainLifts:
         l.maxVal = int(input("Please input your max for "+l.name+": ")) # Will need to accept input from the View passed through controller
         l.calcSets(phase)
@@ -108,7 +131,12 @@ def changePhase():
         l.calcSets(phase)
         print ("Your current max is "+str(l.maxVal)+" and your sets will be "+str(l.setArray)) # For debugging purposes only, delete after frontend is developed
 
-
+def saveVals():
+    userData["Phase"] = phase
+    for l in mainLifts:
+        userData["Maxes"][l.name] = l.maxVal
+    with open("gainz.json", "w") as outfile:
+        json.dump(userData, outfile)
 
 # Model Run Code
 
@@ -156,8 +184,8 @@ while exitCond != True:
                     if set_choice in range(1,5):
                         mainLifts[set_choice-1].setMax(int(input("Enter new max: ")))
                         menuReturn = True
-                    elif set_choice == 6:
-                        initialize()
+                    elif set_choice == 5:
+                        resetMaxes()
                         break
                     else:
                         print("Invalid input")
@@ -183,6 +211,7 @@ while exitCond != True:
 
 
     elif (inp == 3):
+        saveVals()
         print("Proper exit.  Good bye!")
         exitCond = True
     else:
