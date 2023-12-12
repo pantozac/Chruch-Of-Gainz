@@ -12,6 +12,11 @@ Glidepath -
     - Develop into web hosted application able to be accessed from web server
     - Develop into mobile app
 
+Update 0.0.2
+    Beginning to work on front end in Django
+    Look into containerizing application (Kubernetes)
+        - At minimum start tracking dependencies and create install script
+
 Update 0.0.1-3
     Created functionality to import and save data from a JSON file
         -Included exception handling for no json present in directory
