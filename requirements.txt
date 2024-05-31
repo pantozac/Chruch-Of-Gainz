@@ -1,0 +1,11 @@
+Python
+
+Python Package installer (pip)
+
+Python Packages:
+    JSON
+    DJANGO (auto installs asgrief, sqlparse, tzdata)
+    Math
+
+Database: SQLite3 
+Maybe in the future: postgresql (https://www.postgresql.org/)
