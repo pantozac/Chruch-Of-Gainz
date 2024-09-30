@@ -1,1 +1,7 @@
 gainz.json
+gainz/
+scrapCode/
+.vagrant/
+Vagrantfile
+__pycache__/
+.venv
