@@ -1,10 +1,18 @@
 #from src.utils import liftRound
-#from typing import List
+from typing import List
+from datetime import datetime
 
 class Exercise:
-    def __init__(self, name: str, isLift: bool):
-        self.name: str = name
-        self.type: bool = isLift
+    name: str
+    metric: str
+    equipment: List[str]
+    clockType: any
+    sets: int
+    reps: List[int]
+    distance: int
+    time: int
+    score: int | datetime
+
         #self.metric:str = metric
         #self.clockType = "" # AMRAP, Tabata/Interval, EMOM, FOR TIME
 

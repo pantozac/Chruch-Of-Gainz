@@ -1,6 +1,6 @@
 import unittest
 from src.Lift import Lift
-from src.Timer import Stopwatch, AMRAP, Tabata, EMOM
+from scrapCode.Timer import Stopwatch, AMRAP, Tabata, EMOM
 from src import utils
 
 class cog_UnitTests(unittest.TestCase):
