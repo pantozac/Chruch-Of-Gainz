@@ -1,3 +1,5 @@
+demo for the bois
+
 Casa Panto Church of Gainz Lifting App
 
 Purpose:  Ongoing project to develop a workout app based on the lifting program I follow
